@@ -214,7 +214,12 @@ __section(".rodata.tx_coeffs_corr_table") const float tx_coeffs_corr_table[23] =
  */
 
 // Modulation pointer
+#if 0
 static enum mod_t *modulation = (enum mod_t *)0x2000a8cd;
+#else
+static enum mod_t *modulation = (enum mod_t *)0x2000a8d5;
+#endif
+
 
 // Compressor values
 static uint8_t *cmp_enabled = (uint8_t *)0x200000c4;
@@ -224,15 +229,28 @@ static uint8_t *cmp_level = (uint8_t *)0x200000c3;
 static uint8_t *sql = (uint8_t *)0x200000a9;
 
 // UART flow fields
+#if 0
 static uint32_t *flow_reserved_3 = (uint32_t*)0x200013f8;
+#else
+// TODO
+static uint32_t *flow_reserved_3 = (uint32_t*)0x200013f8;
+#endif
 
 
 // I2C registers values start pointer
+#if 0
 static uint32_t *i2c_regs = (uint32_t *)0x2000357c;
 
 static volatile uint8_t *tx_flag = (uint8_t *)0x2000a8cf;
 
 static float *am_carrier_lvl = (float *)0x2000a174;
+#else
+static uint32_t *i2c_regs = (uint32_t *)0x20003584;
+
+static volatile uint8_t *tx_flag = (uint8_t *)0x2000a8d7;
+
+static float *am_carrier_lvl = (float *)0x2000a17c;
+#endif
 
 
 /**
@@ -417,8 +435,13 @@ void apply_rx_iq_offset(void) {
  * Set IQ scale on changing TX power
  */
 __noinline void tx_coeff_calc(float pwr) {
+#if 0
     float *am_depth_of_mod = (float *)0x2000a178;
     float *fm_depth_of_mod = (float *)0x2000a184;
+#else
+    float *am_depth_of_mod = (float *)0x2000a180;
+    float *fm_depth_of_mod = (float *)0x2000a18c;
+#endif
     float k;
     float dac_gain_offset = (int8_t)(i2c_regs[x6100_rfg_txpwr] >> 16) * 0.2f;
 #ifdef PER_BAND_OUT_POWER
@@ -634,8 +657,13 @@ float am_fm_rx_process(float val, float *i, float *q, uint8_t modulation) {
     // data_t *data = (data_t*)DATA_P;
 
     // Clear val array and fir decim state on change modulation
+#if 0
     arm_fir_decimate_instance_f32 *S = (arm_fir_decimate_instance_f32*)0x20008e74;
     float *val_acc = (float *)0x20008fa8;
+#else
+    arm_fir_decimate_instance_f32 *S = (arm_fir_decimate_instance_f32*)0x20008e7c;
+    float *val_acc = (float *)0x20008fb0;
+#endif
 
     if (data->prev_modulation != modulation) {
         data->prev_modulation = modulation;
@@ -696,7 +724,11 @@ typedef struct
 
 
 void anf_update() {
+#if 0
     arm_biquad_casd_df1_inst_f32 *flt = (arm_biquad_casd_df1_inst_f32 *)0x2000d994;
+#else
+    arm_biquad_casd_df1_inst_f32 *flt = (arm_biquad_casd_df1_inst_f32 *)0x2000d99c;
+#endif
     const float k = 3e-3f;
 
     if (data->anf.enabled) {

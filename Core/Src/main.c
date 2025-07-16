@@ -56,6 +56,11 @@ void SystemClock_Config(void);
 
 /* USER CODE END 0 */
 
+extern int am_fm_rx_process(void *, void *, void*);
+extern int configure();
+extern int tx_amp(void *, void*);
+extern int tx_coeff_calc(float);
+extern int anf_update(void *, void*, void*, int);
 /**
   * @brief  The application entry point.
   * @retval int
