@@ -126,16 +126,14 @@ _jump_to_tx_amp_wrapper:
 .align
 _tx_amp_wrapper:
   // Q signal pointer in r1
-  // I signal in sp + 0x64
+  // I signal in sp + 0x114
   push {r0, r3, lr}
-  add  r0, sp, #0x64 + 12
+  add  r0, sp, #0x114 + 12
   vpush {s14-s15}
   bl _tx_amp
   vpop {s14-s15}
   pop {r0, r3, lr}
   bl 0x08035388  // from orig code, interpolate Q
-  // it has diff instruction size.
-  // need to skip 2 more
   b _jump_to_tx_amp_wrapper + 4
 
 .section .tx_amp, "ax"
@@ -162,7 +160,7 @@ _jump_to_tx_coeff_calc_wrapper:
 .section .tx_coeff_calc_wrapper, "ax"
 .align
 _tx_coeff_calc_wrapper:
-  vstr s0, [r2]  // from original code
+  vstr.32 s0, [r2]  // from original code
   push {r1-r3, lr}
   vpush {s4-s15}
   bl _tx_coeff_calc
@@ -200,7 +198,7 @@ _am_fm_rx_process_wrapper:
   VMOV s0,s14
   vpush {s3-s15} // 13
   push {r0-r5, ip, lr} // 8
-  ldrb.w r2, [sp, 0x57 + ((1 + 13 + 8) * 4)]
+  ldrb.w r2, [sp, 0x107 + ((1 + 13 + 8) * 4)]
   LDR r0,=0x20008140
   LDR r1,=0x20008144
   bl _am_fm_rx_process
