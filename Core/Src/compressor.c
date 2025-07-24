@@ -262,11 +262,11 @@ extern void arm_fill_f32 (float val, float* data, uint32_t size) __attribute__((
  * Db <-> linear conversion
  */
 
-inline float db2lin(float val) {
+inline __attribute__((always_inline)) float db2lin(float val) {
     return powf10_c(val / 20.0f);
 }
 
-inline float lin2db(float val) {
+inline __attribute__((always_inline)) float lin2db(float val) {
     return 20.0f * log10f_c(val + 1e-16f);
 }
 
