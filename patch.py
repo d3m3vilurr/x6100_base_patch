@@ -34,6 +34,7 @@ patchsets = {
         'asm': 'asm/helper_f19fb85db1f74ad10eb379927880519c.s',
         'stack_p_1': 0x08034a74,
         'init_data': 0x08034a66,
+        # TODO
         'configure': 0x080242f8,
         'compress': 0x08025388,
         'tx_amp': 0x080253fa,
