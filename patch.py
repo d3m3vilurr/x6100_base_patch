@@ -22,6 +22,7 @@ patchsets = {
         'stack_p_1': 0x08032dbc,
         'init_data': 0x08032dae,
         'configure': 0x08023c36,
+        'apply_rx_iq_offset': 0x080241ac,
         'compress': 0x08024b06,
         'tx_amp': 0x08024b6e,
         'tx_coeff_calc': 0x080237ae,
@@ -35,6 +36,8 @@ patchsets = {
         'stack_p_1': 0x08034a74,
         'init_data': 0x08034a66,
         'configure': 0x0802432c,
+        # TODO
+        'apply_rx_iq_offset': 0x080241ac,
         'compress': 0x08025388,
         'tx_amp': 0x080253fa,
         'tx_coeff_calc': 0x08023e18,
@@ -280,7 +283,7 @@ def main():
     functions = InjectFunctions([
         InjectFunction("init_data", patchset["init_data"]),  # fill ram area with zeros
         InjectFunction("configure", patchset["configure"]),  # configure state at start of DMA handler
-        InjectFunction("apply_rx_iq_offset", 0x080241ac),  # Convert IQ to float and apply an offsets
+        InjectFunction("apply_rx_iq_offset", patchset["apply_rx_iq_offset"]),  # Convert IQ to float and apply an offsets
         InjectFunction("compress", patchset["compress"], copy_replaced=True),  # compress, limit TX signal
         InjectFunction("tx_amp", patchset["tx_amp"]),  # amp IQ according to configured TX power
         InjectFunction("tx_coeff_calc", patchset["tx_coeff_calc"], rodata_vars=("tx_coeffs_corr_table",)),  # update coefficients for IQ on TX power change
