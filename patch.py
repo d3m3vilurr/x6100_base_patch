@@ -18,7 +18,7 @@ prog_name = "x6100_mcu"
 patchsets = {
     # X6100_BBFW_V1.1.6_221112001.bin
     '36eb378655ac5661a3e676a0b6caab02': {
-        'asm': 'asm/helper_36eb378655ac5661a3e676a0b6caab02.s',
+        'date': '221112001',
         'stack_p_1': 0x08032dbc,
         'init_data': 0x08032dae,
         'configure': 0x08023c36,
@@ -31,7 +31,7 @@ patchsets = {
     },
     # X6100_BBFW_V1.1.6_230307001.bin
     'f19fb85db1f74ad10eb379927880519c': {
-        'asm': 'asm/helper_f19fb85db1f74ad10eb379927880519c.s',
+        'date': '230307001',
         'stack_p_1': 0x08034a74,
         'init_data': 0x08034a66,
         # TODO
@@ -45,8 +45,8 @@ patchsets = {
     },
 }
 
-def compile_patch_helper(asm, o_file):
-    cmd = f"arm-none-eabi-as {asm} -o {o_file}"
+def compile_patch_helper(asm, o_file, date):
+    cmd = f"arm-none-eabi-as {asm} -o {o_file} --defsym BUILD_DATE={date}"
     print("Call:", cmd)
     subprocess.check_call(shlex.split(cmd))
 
@@ -274,9 +274,9 @@ def main():
 
     # arm-none-eabi-objdump -S build/Release/CMakeFiles/test_patch.dir/Core/Src/compressor.c.obj
 
-    asm = patchset["asm"]
+    asm = "asm/helper.s"
     o_file = "asm/helper.o"
-    compile_patch_helper(asm, o_file)
+    compile_patch_helper(asm, o_file, date=patchset["date"])
 
     functions = InjectFunctions([
         InjectFunction("init_data", patchset["init_data"]),  # fill ram area with zeros
