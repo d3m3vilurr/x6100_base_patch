@@ -6,7 +6,7 @@
 // -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb
 
 .section .text
-.align
+//.align
 .global _start
   nop
 
@@ -26,12 +26,12 @@
 */
 
 .section .insert_to_configure, "ax"
-.align
+//.align
 _jump_to_configure_wrapper:
   b _configure_wrapper
 
 .section .configure_wrapper, "ax"
-.align
+//.align
 _configure_wrapper:
   bl 0x0802e2ac  //call DMA_ClearITPendingBit
   // save registers
@@ -43,7 +43,7 @@ _configure_wrapper:
   b _jump_to_configure_wrapper + 4
 
 .section .configure, "ax"
-.align
+//.align
 _configure:
   nop
 
@@ -51,17 +51,16 @@ _configure:
 // Compressor block
 
 .section .insert_to_compress,"ax"
-.align
+//.align
 _jump_to_compress:
   b _compress_wrapper
 
 
 .section .compress_wrapper,"ax"
-.align
+//.align
 _compress_wrapper:
+    sub r0, r6, #0xc
     // bl 0x08037998  // arm_fir_decimate_f32
-    nop
-    nop
     // bl 0x08036024  // arm_biquad_cascade_df1_f32
     // vldr.32 s0, [sp, #0x58]  // sp+0x58  tx_audio
     vldr s0, [r1]
@@ -77,28 +76,28 @@ _compress_wrapper:
     b _jump_to_compress + 4
 
 .section .compress, "ax"
-.align
+//.align
 _compress:
     nop
 
 
 // Init data block (fill mem with zeros)
 
-.align
+//.align
 .section .insert_to_init_data,"ax"
 _jump_to_init_data:
   b _init_data_wrapper
 
 
 .section .init_data_wrapper, "ax"
-.align
+//.align
 _init_data_wrapper:
   bl 0x08034870  // from orig code, SystemInit
   bl _init_data
   b _jump_to_init_data + 4
 
 .section .init_data, "ax"
-.align
+//.align
 _init_data:
   nop
 
@@ -116,14 +115,14 @@ _init_data:
    sp + 0x64 - Q signal
 */
 
-.align
+//.align
 .section .insert_to_tx_amp, "ax"
 _jump_to_tx_amp_wrapper:
   b _tx_amp_wrapper
 
 
 .section .tx_amp_wrapper, "ax"
-.align
+//.align
 _tx_amp_wrapper:
   // Q signal pointer in r1
   // I signal in sp + 0x114
@@ -137,7 +136,7 @@ _tx_amp_wrapper:
   b _jump_to_tx_amp_wrapper + 4
 
 .section .tx_amp, "ax"
-.align
+//.align
 _tx_amp:
   nop
 
@@ -152,13 +151,13 @@ _tx_amp:
    080237b8 59 62           str     r1,[r3,#0x24]=>DAT_2000dae0
 */
 .section .insert_to_tx_coeff_calc, "ax"
-.align
+//.align
 _jump_to_tx_coeff_calc_wrapper:
   b _tx_coeff_calc_wrapper
 
 
 .section .tx_coeff_calc_wrapper, "ax"
-.align
+//.align
 _tx_coeff_calc_wrapper:
   vstr.32 s0, [r2]  // from original code
   push {r1-r3, lr}
@@ -170,7 +169,7 @@ _tx_coeff_calc_wrapper:
   b _jump_to_tx_coeff_calc_wrapper + 4
 
 .section .tx_coeff_calc, "ax"
-.align
+//.align
 _tx_coeff_calc:
   nop
 
@@ -185,13 +184,13 @@ _tx_coeff_calc:
 
 */
 
-.align
+//.align
 .section .insert_to_am_fm_rx_process, "ax"
 _jump_to_am_fm_rx_process_wrapper:
   b _am_fm_rx_process_wrapper
 
 .section .am_fm_rx_process_wrapper, "ax"
-.align
+//.align
 _am_fm_rx_process_wrapper:
   // save registers
   vpush {s0}  // 1
@@ -211,7 +210,7 @@ _am_fm_rx_process_wrapper:
   b _jump_to_am_fm_rx_process_wrapper + 4
 
 .section .am_fm_rx_process, "ax"
-.align
+//.align
 _am_fm_rx_process:
   nop
 
@@ -223,12 +222,12 @@ _am_fm_rx_process:
 */
 
 .section .insert_to_anf_update, "ax"
-.align
+//.align
 _jump_to_anf_update_wrapper:
   b _anf_update_wrapper
 
 .section .anf_update_wrapper, "ax"
-.align
+//.align
 _anf_update_wrapper:
   bl 0x8036024  //call arm_biquad_cascade_df1_f32
   // save registers
@@ -240,6 +239,6 @@ _anf_update_wrapper:
   b _jump_to_anf_update_wrapper + 4
 
 .section .anf_update, "ax"
-.align
+//.align
 _anf_update:
   nop

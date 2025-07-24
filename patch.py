@@ -177,7 +177,7 @@ class InjectFunction:
 
     def setup_insert_code(self, asm_elf):
         self.insert_code = get_patched_section(asm_elf, f".insert_to_{self.name}")
-        assert len(self.insert_code) == 4, f"{self.name} insert is not 4 bytes"
+        assert len(self.insert_code) == 4, f"{self.name} insert is not 4 bytes, {len(self.insert_code)}"
 
 
 class InjectFunctions:

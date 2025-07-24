@@ -82,8 +82,14 @@ SECTIONS
   {
     /* Set BB functions*/
     start_text = ABSOLUTE(.);
+    /*
     arm_fill_f32_addr = 0x08032dd8;
     arm_biquad_cascade_df1_f32_addr = 0x0803436c;
+    printStr_addr = 0x08035bf4;
+    */
+
+    arm_fill_f32_addr = 0x08034a90;
+    arm_biquad_cascade_df1_f32_addr = 0x08036024;
     printStr_addr = 0x08035bf4;
 
     . += arm_fill_f32_addr - start_text;
@@ -100,7 +106,9 @@ SECTIONS
     *(.text)           /* .text sections (code) */
 
     /* Set new functions with offset for asm code */
-    end_oem_fw = 0x0807df34;
+    /*end_oem_fw = 0x0807df34;*/
+    end_oem_fw = 0x807fbf4;
+    /*end_oem_fw = 0x807f200;*/
     . = end_oem_fw - start_text + 64;
     . = ALIGN(4);
     *(.text*)          /* .text* sections (code) */
