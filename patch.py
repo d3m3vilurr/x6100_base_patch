@@ -34,8 +34,7 @@ patchsets = {
         'date': '230307001',
         'stack_p_1': 0x08034a74,
         'init_data': 0x08034a66,
-        # TODO
-        'configure': 0x080242f8,
+        'configure': 0x0802432c,
         'compress': 0x08025388,
         'tx_amp': 0x080253fa,
         'tx_coeff_calc': 0x08023e18,
