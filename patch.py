@@ -280,9 +280,10 @@ def main():
     functions = InjectFunctions([
         InjectFunction("init_data", patchset["init_data"]),  # fill ram area with zeros
         InjectFunction("configure", patchset["configure"]),  # configure state at start of DMA handler
+        InjectFunction("apply_rx_iq_offset", 0x080241ac),  # Convert IQ to float and apply an offsets
         InjectFunction("compress", patchset["compress"], copy_replaced=True),  # compress, limit TX signal
         InjectFunction("tx_amp", patchset["tx_amp"]),  # amp IQ according to configured TX power
-        InjectFunction("tx_coeff_calc", patchset["tx_coeff_calc"]),  # update coefficients for IQ on TX power change
+        InjectFunction("tx_coeff_calc", patchset["tx_coeff_calc"], rodata_vars=("tx_coeffs_corr_table",)),  # update coefficients for IQ on TX power change
         InjectFunction("am_fm_rx_process", patchset["am_fm_rx_process"]),  # process AM/FM rx (sql, dc blocker)
         InjectFunction("anf_update", patchset["anf_update"]),  # update notch filter params
     ], asm_o_file=o_file, flash_offset=flash_offset, orig_fw_size=len(orig_code))
