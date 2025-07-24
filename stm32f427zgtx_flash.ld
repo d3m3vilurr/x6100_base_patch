@@ -90,8 +90,7 @@ SECTIONS
 
     arm_fill_f32_addr = 0x08034a90;
     arm_biquad_cascade_df1_f32_addr = 0x08036024;
-    /* TODO */
-    printStr_addr = 0x08035bf4;
+    printStr_addr = 0x080378ac;
 
     . += arm_fill_f32_addr - start_text;
     *(.arm_fill_f32_sec)
