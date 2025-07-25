@@ -32,12 +32,14 @@ patchsets = {
     },
     # X6100_BBFW_V1.1.6_230307001.bin
     'f19fb85db1f74ad10eb379927880519c': {
+        # STACK_P = 0x20003000
+        # DATA_START = 0x20000000
+        # BSS_START  = 0x20003560
         'date': '230307001',
         'stack_p_1': 0x08034a74,
         'init_data': 0x08034a66,
         'configure': 0x0802432c,
-        # TODO
-        'apply_rx_iq_offset': 0x080241ac,
+        'apply_rx_iq_offset': 0x0802494c,
         'compress': 0x08025388,
         'tx_amp': 0x080253fa,
         'tx_coeff_calc': 0x08023e18,

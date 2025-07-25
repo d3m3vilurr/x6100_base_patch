@@ -106,9 +106,10 @@ SECTIONS
     *(.text)           /* .text sections (code) */
 
     /* Set new functions with offset for asm code */
-    /*end_oem_fw = 0x0807df34;*/
+    /*
+    end_oem_fw = 0x0807df34;
+    */
     end_oem_fw = 0x807fbf4;
-    /*end_oem_fw = 0x807f200;*/
     . = end_oem_fw - start_text + 64;
     . = ALIGN(4);
     *(.text*)          /* .text* sections (code) */

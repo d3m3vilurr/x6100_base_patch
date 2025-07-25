@@ -9,6 +9,8 @@
 .equ RX_SP_OFFSET,                0x57
 .equ RX_I_SIGNAL,                 0x20008138
 .equ RX_Q_SIGNAL,                 0x2000813c
+RX_I_REGISTER .req                s16
+RX_Q_REGISTER .req                s17
 
 .elseif BUILD_DATE == 230307001
 
@@ -21,5 +23,7 @@
 .equ RX_SP_OFFSET,                0x107
 .equ RX_I_SIGNAL,                 0x20008140
 .equ RX_Q_SIGNAL,                 0x20008144
+RX_I_REGISTER .req                s16
+RX_Q_REGISTER .req                s22
 
 .endif

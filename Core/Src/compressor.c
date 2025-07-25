@@ -367,6 +367,15 @@ __attribute__((optimize("O1"))) void init_data(void) {
  */
 
 void configure() {
+    // before work 0x0802645c;
+    //   case1:
+    //      new: *(f*)0x2000a700 = *(f*)0x2000a700 * 0.95
+    //      old: *(f*)0x2000a6f8 = *(f*)0x2000a6f8 * 0.95
+    //   case2:
+    //      new: *(f*)0x2000a6f8 = 1.0 - *(f*)0x2000a700
+    //      old: *(f*)0x...      = 1.0 - *(f*)0x2000a6f8 * 0.95
+    //
+
     update_comp_params();
     update_anf_params();
     bool update_tx_coeffs = false;
@@ -429,6 +438,22 @@ void apply_rx_iq_offset(void) {
     data->rx_iq_offset.q += *q * 0.0001f;
 }
 
+// temporary quake's fast inv sqrt
+inline __attribute__((always_inline)) float Q_rsqrt(float number) {
+    long i;
+    float x2, y;
+    const float threehalfs = 1.5F;
+
+    x2 = number * 0.5F;
+    y  = number;
+    i  = * ( long * ) &y;                       // evil floating point bit level hacking
+    i  = 0x5f3759df - ( i >> 1 );               // what the...?
+    y  = * ( float * ) &i;
+    y  = y * ( threehalfs - ( x2 * y * y ) );   // 1st iteration
+                                                //      y  = y * ( threehalfs - ( x2 * y * y ) );   // 2nd iteration, this can be removed
+
+    return y;
+}
 
 /**
  * Set IQ scale on changing TX power
@@ -460,7 +485,8 @@ __noinline void tx_coeff_calc(float pwr) {
         if (pow_scale <= 0.0f) {
             k = 1.0f;
         } else {
-            k = sqrtf(pow_scale);
+            //k = sqrtf(pow_scale);
+            k = pow_scale * Q_rsqrt(pow_scale);
         }
     } else {
         k = 1.0f;

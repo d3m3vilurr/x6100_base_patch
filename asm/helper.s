@@ -67,14 +67,16 @@ _apply_rx_iq_offset_wrapper:
   vpush {s12-s15}
 
   // push arguments, call func, pop arguments
-  vpush {s16, s17}
+  vpush {RX_Q_REGISTER}
+  vpush {RX_I_REGISTER}
   bl _apply_rx_iq_offset
-  vpop {s16, s17}
+  vpop {RX_I_REGISTER}
+  vpop {RX_Q_REGISTER}
 
   vpop {s12-s15}
   pop {r2, r3}
 
-  vmul.f32 s17,s17,s15  // from original
+  vmul.f32 RX_Q_REGISTER,RX_Q_REGISTER,s15  // from original
 
   b _jump_to_apply_rx_iq_offset_wrapper + 4
 
