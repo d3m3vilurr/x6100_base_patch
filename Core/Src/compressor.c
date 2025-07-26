@@ -5,6 +5,7 @@
 #include "log10f.c"
 #include "powf.c"
 #include "sin_values.c"
+#include "sqrtf.c"
 #include "stdarg.h"
 #include "stdio.h"
 
@@ -438,23 +439,6 @@ void apply_rx_iq_offset(void) {
     data->rx_iq_offset.q += *q * 0.0001f;
 }
 
-// temporary quake's fast inv sqrt
-inline __attribute__((always_inline)) float Q_rsqrt(float number) {
-    long i;
-    float x2, y;
-    const float threehalfs = 1.5F;
-
-    x2 = number * 0.5F;
-    y  = number;
-    i  = * ( long * ) &y;                       // evil floating point bit level hacking
-    i  = 0x5f3759df - ( i >> 1 );               // what the...?
-    y  = * ( float * ) &i;
-    y  = y * ( threehalfs - ( x2 * y * y ) );   // 1st iteration
-                                                //      y  = y * ( threehalfs - ( x2 * y * y ) );   // 2nd iteration, this can be removed
-
-    return y;
-}
-
 /**
  * Set IQ scale on changing TX power
  */
@@ -485,8 +469,11 @@ __noinline void tx_coeff_calc(float pwr) {
         if (pow_scale <= 0.0f) {
             k = 1.0f;
         } else {
-            //k = sqrtf(pow_scale);
-            k = pow_scale * Q_rsqrt(pow_scale);
+#if 0
+            k = sqrtf(pow_scale);
+#else
+            k = sqrtf_c(pow_scale);
+#endif
         }
     } else {
         k = 1.0f;
@@ -570,7 +557,11 @@ __attribute__((noinline, optimize("O2"))) float compress(float val) {
     float rms;
     float squared_mean = data->comp.squared_sum / data->comp.squared_acc.size;
     if (squared_mean >= 0) {
+#if 0
         rms = sqrtf(squared_mean);
+#else
+        rms = sqrtf_c(squared_mean);
+#endif
     } else {
         rms = 0.0f;
     }
