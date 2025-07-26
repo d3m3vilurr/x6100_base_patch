@@ -505,11 +505,7 @@ __noinline void tx_coeff_calc(float pwr) {
     }
     *am_depth_of_mod = 3.73f * am_k * k;
 
-#if 0
     data->tx_amp_coeffs.ssb = k;
-#else
-    data->tx_amp_coeffs.ssb = k * 0.95f;
-#endif
     // data->tx_amp_coeffs.fm = 7.6e-2f * k;
 #if 0
     data->tx_amp_coeffs.cw = 6.04e-2f * k;
