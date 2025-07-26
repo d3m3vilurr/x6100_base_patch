@@ -338,7 +338,7 @@ static inline void update_comp_params() {
     }
 }
 
-void update_anf_params() {
+static inline void update_anf_params() {
     if (i2c_regs[x6100_dnfcnt_dnfwidth_dnfe] != data->anf.i2c_reg_val) {
         data->anf.i2c_reg_val = i2c_regs[x6100_dnfcnt_dnfwidth_dnfe];
         data->anf.enabled = (data->anf.i2c_reg_val >> 25) & 1;
