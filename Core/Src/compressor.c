@@ -481,14 +481,23 @@ __noinline void tx_coeff_calc(float pwr) {
     // set coeffs
     k *= data->dac_output_coeff;
     // calibrate FM to 10W with 0 gain offset
+#if 0
     data->tx_amp_coeffs.fm = 8.12e-2f * k;
+#else
+    data->tx_amp_coeffs.fm = 8.12e-2f * k * 9.5f;
+#endif
 
     // AM carrier ~= fm / 2 ** 0.5 / 2
     // 25 % of output power is a carrier
     // 6W (7w wo limiter) output with unity input sine 1000 Hz. Will add 1.291 scale for both carrier and signal
     // float am_k = 1.291f;
     // float am_k = 1.195f;
+#if 0
     float am_k = 1.0f;
+#else
+    // don't know reason 1.0f is too low power (0.1w out when 5w set)
+    float am_k = 9.5f;
+#endif
     if (data->swr_scan) {
         *am_carrier_lvl = 0.75f;
     } else {
@@ -496,9 +505,17 @@ __noinline void tx_coeff_calc(float pwr) {
     }
     *am_depth_of_mod = 3.73f * am_k * k;
 
+#if 0
     data->tx_amp_coeffs.ssb = k;
+#else
+    data->tx_amp_coeffs.ssb = k * 0.95f;
+#endif
     // data->tx_amp_coeffs.fm = 7.6e-2f * k;
+#if 0
     data->tx_amp_coeffs.cw = 6.04e-2f * k;
+#else
+    data->tx_amp_coeffs.cw = 6.04e-2f * k * 9.5f;
+#endif
 
     // for 2.5 w carrier at 10w output
     // *am_carrier_lvl = 0.025f * k;
