@@ -188,6 +188,7 @@ typedef struct {
 
         float adc_dac_gain_offset;  // For in audio / out rf correction
         float dac_gain_offset;  // For per-band out correction
+        float adc_dac_pwr_mul_offset;
         bool outdated;
     } tx_amp_coeffs;
 
@@ -868,7 +869,7 @@ __noinline void tx_coeff_calc(float pwr) {
     data->dac_output_coeff = db2lin(data->tx_amp_coeffs.adc_dac_gain_offset + data->tx_amp_coeffs.dac_gain_offset);
     data->adc_input_coeff = 1.0f / db2lin(data->tx_amp_coeffs.adc_dac_gain_offset);
     if (pwr >= 0) {
-        float pow_scale = pwr / 10.0f;
+        float pow_scale = (pwr * data->tx_amp_coeffs.adc_dac_pwr_mul_offset) / 10.0f;
         if (pow_scale <= 0.0f) {
             k = 1.0f;
         } else {
@@ -1256,7 +1257,8 @@ typedef union {
     uint32_t i;
     struct {
         uint16_t adc_dac_gain_offset;  // bf16
-        uint16_t dac_gain_offset;  // bf16
+        uint8_t dac_gain_offset;
+        uint8_t adc_dac_pwr_mul_offset;
     } v;
 } x6100_reg_dac_adc_offsets_t;
 
@@ -1277,8 +1279,8 @@ static void process_custom_cmd() {
         x6100_reg_dac_adc_offsets_t reg = {data->i2c_raw.dac_adc_offsets};
         fuint.i = reg.v.adc_dac_gain_offset << 16;
         data->tx_amp_coeffs.adc_dac_gain_offset = fuint.f;
-        fuint.i = reg.v.dac_gain_offset << 16;
-        data->tx_amp_coeffs.dac_gain_offset = fuint.f;
+        data->tx_amp_coeffs.dac_gain_offset = ((float)(int8_t)reg.v.dac_gain_offset) * 0.1f;
+        data->tx_amp_coeffs.adc_dac_pwr_mul_offset = ((float)(int8_t)reg.v.adc_dac_pwr_mul_offset) * 0.1f;
         data->tx_amp_coeffs.outdated = true;
     }
 }
